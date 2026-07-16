@@ -26,9 +26,7 @@ class ConfigNode(dict):
         try:
             value = self[item]
         except KeyError as exc:
-            raise AttributeError(
-                f"Config has no key '{item}'. Check config/config.yaml."
-            ) from exc
+            raise AttributeError(f"Config has no key '{item}'. Check config/config.yaml.") from exc
         if isinstance(value, dict):
             return ConfigNode(value)
         return value

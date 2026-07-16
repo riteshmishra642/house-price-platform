@@ -29,10 +29,26 @@ from src.utils.logger import get_logger
 logger = get_logger(__name__)
 
 NEIGHBORHOODS = [
-    "NAmes", "CollgCr", "OldTown", "Edwards", "Somerst", "Gilbert",
-    "NridgHt", "Sawyer", "NWAmes", "SawyerW", "BrkSide", "Crawfor",
-    "Mitchel", "NoRidge", "Timber", "IDOTRR", "ClearCr", "StoneBr",
-    "SWISU", "Blmngtn",
+    "NAmes",
+    "CollgCr",
+    "OldTown",
+    "Edwards",
+    "Somerst",
+    "Gilbert",
+    "NridgHt",
+    "Sawyer",
+    "NWAmes",
+    "SawyerW",
+    "BrkSide",
+    "Crawfor",
+    "Mitchel",
+    "NoRidge",
+    "Timber",
+    "IDOTRR",
+    "ClearCr",
+    "StoneBr",
+    "SWISU",
+    "Blmngtn",
 ]
 MS_ZONING = ["RL", "RM", "FV", "RH", "C (all)"]
 BLDG_TYPE = ["1Fam", "2fmCon", "Duplex", "TwnhsE", "Twnhs"]
@@ -88,15 +104,11 @@ def _generate_synthetic_ames(n_samples: int, random_seed: int) -> pd.DataFrame:
     overall_qual = rng.integers(1, 11, size=n)
     overall_cond = rng.integers(1, 10, size=n)
     year_built = rng.integers(1872, 2011, size=n)
-    year_remod = np.clip(
-        year_built + rng.integers(0, 40, size=n), year_built, 2010
-    )
+    year_remod = np.clip(year_built + rng.integers(0, 40, size=n), year_built, 2010)
     neighborhood = rng.choice(NEIGHBORHOODS, size=n)
 
     # Neighborhood desirability multiplier drives location-based price variance.
-    neighborhood_premium = {
-        name: rng.uniform(0.75, 1.45) for name in NEIGHBORHOODS
-    }
+    neighborhood_premium = {name: rng.uniform(0.75, 1.45) for name in NEIGHBORHOODS}
     neighborhood_factor = np.array([neighborhood_premium[nb] for nb in neighborhood])
 
     lot_area = rng.lognormal(mean=9.1, sigma=0.45, size=n).astype(int)
@@ -116,24 +128,18 @@ def _generate_synthetic_ames(n_samples: int, random_seed: int) -> pd.DataFrame:
     full_bath = rng.choice([1, 2, 3], size=n, p=[0.35, 0.55, 0.10])
     half_bath = rng.choice([0, 1, 2], size=n, p=[0.55, 0.4, 0.05])
     bedroom_abvgr = rng.integers(1, 6, size=n)
-    tot_rms_abvgrd = np.clip(
-        bedroom_abvgr + full_bath + half_bath + rng.integers(1, 4, size=n), 3, 14
-    )
+    tot_rms_abvgrd = np.clip(bedroom_abvgr + full_bath + half_bath + rng.integers(1, 4, size=n), 3, 14)
     fireplaces = rng.choice([0, 1, 2, 3], size=n, p=[0.47, 0.38, 0.12, 0.03])
 
     garage_cars = rng.choice([0, 1, 2, 3, 4], size=n, p=[0.06, 0.24, 0.55, 0.13, 0.02])
     garage_area = (garage_cars * rng.normal(280, 40, size=n)).clip(min=0).astype(int)
-    garage_yr_blt = np.where(
-        garage_cars > 0, np.clip(year_built + rng.integers(0, 20, size=n), 1900, 2010), np.nan
-    )
+    garage_yr_blt = np.where(garage_cars > 0, np.clip(year_built + rng.integers(0, 20, size=n), 1900, 2010), np.nan)
 
     wood_deck_sf = np.clip(rng.exponential(60, size=n), 0, 857).astype(int)
     open_porch_sf = np.clip(rng.exponential(35, size=n), 0, 547).astype(int)
     pool_area = (rng.random(n) < 0.005) * rng.integers(200, 800, size=n)
 
-    mas_vnr_area = np.where(
-        rng.random(n) < 0.6, np.clip(rng.exponential(90, size=n), 0, 1600), 0.0
-    )
+    mas_vnr_area = np.where(rng.random(n) < 0.6, np.clip(rng.exponential(90, size=n), 0, 1600), 0.0)
 
     mo_sold = rng.integers(1, 13, size=n)
     yr_sold = rng.integers(2006, 2011, size=n)
@@ -272,9 +278,7 @@ def load_or_create_raw_dataset(force_regenerate: bool = False) -> pd.DataFrame:
         df = _download_from_url(config.data.ames_source_url)
     if df is None:
         if not config.data.fallback.enabled:
-            raise RuntimeError(
-                "All network data sources failed and synthetic fallback is disabled."
-            )
+            raise RuntimeError("All network data sources failed and synthetic fallback is disabled.")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             df = _generate_synthetic_ames(

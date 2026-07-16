@@ -67,7 +67,8 @@ def build_full_preprocessor(df: pd.DataFrame) -> ColumnTransformer:
     numeric_cols, categorical_cols = split_feature_types(df)
     logger.info(
         "Building preprocessor: %d numeric columns, %d categorical columns.",
-        len(numeric_cols), len(categorical_cols),
+        len(numeric_cols),
+        len(categorical_cols),
     )
     return build_preprocessing_pipeline(
         numeric_cols, categorical_cols, scaling_method=config.preprocessing.scaling_method

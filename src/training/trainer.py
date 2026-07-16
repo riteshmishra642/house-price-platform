@@ -79,9 +79,7 @@ def prepare_train_test_data(random_seed: int = 42):
     target_col = config.data.target_column
 
     raw_df = load_or_create_raw_dataset()
-    train_raw, test_raw = train_test_split(
-        raw_df, test_size=config.data.test_size, random_state=random_seed
-    )
+    train_raw, test_raw = train_test_split(raw_df, test_size=config.data.test_size, random_state=random_seed)
 
     cleaner = DataCleaner(
         target_column=target_col,
@@ -160,7 +158,9 @@ def train_and_evaluate_all_models(
         outer_cv_folds = 2 if name in ("stacking", "voting") else config.models.cv_folds
         try:
             cv_scores = cross_val_score(
-                pipeline, X_train, y_train_model,
+                pipeline,
+                X_train,
+                y_train_model,
                 cv=KFold(n_splits=outer_cv_folds, shuffle=True, random_state=config.project.random_seed),
                 scoring="neg_root_mean_squared_error",
                 n_jobs=1,
@@ -172,15 +172,28 @@ def train_and_evaluate_all_models(
             cv_rmse_mean, cv_rmse_std = float("nan"), float("nan")
 
         result = ModelResult(
-            name=name, mae=mae, mse=mse, rmse=rmse, r2=r2, adjusted_r2=adj_r2,
-            mape=mape, cv_rmse_mean=cv_rmse_mean, cv_rmse_std=cv_rmse_std,
+            name=name,
+            mae=mae,
+            mse=mse,
+            rmse=rmse,
+            r2=r2,
+            adjusted_r2=adj_r2,
+            mape=mape,
+            cv_rmse_mean=cv_rmse_mean,
+            cv_rmse_std=cv_rmse_std,
             train_time_seconds=train_time,
         )
         results.append(result)
         fitted_pipelines[name] = pipeline
         logger.info(
             "%s -> RMSE=%.2f | R2=%.4f | MAPE=%.2f%% | CV_RMSE=%.2f (+/- %.2f) | %.1fs",
-            name, rmse, r2, mape, cv_rmse_mean, cv_rmse_std, train_time,
+            name,
+            rmse,
+            r2,
+            mape,
+            cv_rmse_mean,
+            cv_rmse_std,
+            train_time,
         )
 
     results.sort(key=lambda r: r.rmse)
@@ -230,9 +243,7 @@ def save_artifacts(
 def run_training_pipeline() -> tuple[str, List[ModelResult]]:
     """End-to-end entry point: prepare data, train all models, save the winner."""
     config = load_config()
-    X_train, X_test, y_train, y_test, _ = prepare_train_test_data(
-        random_seed=config.project.random_seed
-    )
+    X_train, X_test, y_train, y_test, _ = prepare_train_test_data(random_seed=config.project.random_seed)
     fitted_pipelines, results = train_and_evaluate_all_models(X_train, X_test, y_train, y_test)
     best_model_name = select_best_model(results)
     save_artifacts(fitted_pipelines, results, best_model_name, list(X_train.columns))

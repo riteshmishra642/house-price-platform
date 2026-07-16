@@ -128,7 +128,9 @@ def tune_with_randomized_search(
     search.fit(X_train, np.log1p(y_train))
     logger.info(
         "RandomizedSearchCV complete for '%s': best CV RMSE(log) = %.5f, best params = %s",
-        model_name, -search.best_score_, search.best_params_,
+        model_name,
+        -search.best_score_,
+        search.best_params_,
     )
     return search
 
@@ -170,7 +172,9 @@ def tune_with_optuna(
         model = model_builder(trial)
         pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("model", model)])
         scores = cross_val_score(
-            pipeline, X_train, y_log,
+            pipeline,
+            X_train,
+            y_log,
             cv=KFold(n_splits=cv_folds, shuffle=True, random_state=random_seed),
             scoring="neg_root_mean_squared_error",
             n_jobs=1,
@@ -182,7 +186,9 @@ def tune_with_optuna(
 
     logger.info(
         "Optuna tuning complete for '%s': best RMSE(log) = %.5f, best params = %s",
-        model_name, study.best_value, study.best_params,
+        model_name,
+        study.best_value,
+        study.best_params,
     )
     return study
 
@@ -214,7 +220,10 @@ if __name__ == "__main__":
 
     best_name = "ridge"
     search_result = tune_with_randomized_search(
-        best_name, get_model(best_name), X_train, y_train,
+        best_name,
+        get_model(best_name),
+        X_train,
+        y_train,
         n_iter=config.models.hyperparameter_tuning.n_iter,
         cv_folds=3,
         random_seed=config.project.random_seed,

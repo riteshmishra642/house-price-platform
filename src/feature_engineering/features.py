@@ -67,7 +67,7 @@ class FeatureEngineer:
         if "YearRemodAdd" in df.columns:
             df["RemodAge"] = (sale_year - df["YearRemodAdd"]).clip(lower=0)
         if "GarageYrBlt" in df.columns:
-            garage_age = (sale_year - df["GarageYrBlt"])
+            garage_age = sale_year - df["GarageYrBlt"]
             df["GarageAge"] = garage_age.clip(lower=0).fillna(0)
         if "HouseAge" in df.columns:
             df["IsRemodeled"] = (df.get("RemodAge", df["HouseAge"]) < df["HouseAge"]).astype(int)
@@ -86,9 +86,7 @@ class FeatureEngineer:
         if {"GarageArea", "LotArea"}.issubset(df.columns):
             df["GarageRatio"] = (df["GarageArea"] / df["LotArea"].replace(0, np.nan)).fillna(0)
         if {"TotalBsmtSF", "1stFlrSF"}.issubset(df.columns):
-            df["BasementRatio"] = (
-                df["TotalBsmtSF"] / df["1stFlrSF"].replace(0, np.nan)
-            ).fillna(0).clip(upper=3)
+            df["BasementRatio"] = (df["TotalBsmtSF"] / df["1stFlrSF"].replace(0, np.nan)).fillna(0).clip(upper=3)
         if {"GrLivArea", "LotArea"}.issubset(df.columns):
             df["LivingAreaRatio"] = (df["GrLivArea"] / df["LotArea"].replace(0, np.nan)).fillna(0)
         if {"1stFlrSF", "2ndFlrSF"}.issubset(df.columns):
@@ -112,9 +110,9 @@ class FeatureEngineer:
         df["TotalBathrooms"] = full + 0.5 * half + bsmt_full + 0.5 * bsmt_half
         if {"TotRmsAbvGrd", "BedroomAbvGr"}.issubset(df.columns):
             df["TotalRooms"] = df["TotRmsAbvGrd"] + df["TotalBathrooms"]
-            df["RoomsPerBedroom"] = (
-                df["TotRmsAbvGrd"] / df["BedroomAbvGr"].replace(0, np.nan)
-            ).fillna(df["TotRmsAbvGrd"])
+            df["RoomsPerBedroom"] = (df["TotRmsAbvGrd"] / df["BedroomAbvGr"].replace(0, np.nan)).fillna(
+                df["TotRmsAbvGrd"]
+            )
         return df
 
     @staticmethod
@@ -182,9 +180,7 @@ class FeatureEngineer:
             df["NeighborhoodQualityScore"] = neighborhood_quality
         if {"GrLivArea", "TotalBsmtSF"}.issubset(df.columns):
             total_area = df["GrLivArea"] + df.get("TotalBsmtSF", 0)
-            df["PropertyValueIndex"] = (
-                df.get("OverallQual", 5) * total_area.replace(0, np.nan)
-            ).fillna(0) / 1000
+            df["PropertyValueIndex"] = (df.get("OverallQual", 5) * total_area.replace(0, np.nan)).fillna(0) / 1000
         return df
 
 

@@ -85,9 +85,7 @@ def plot_prediction_error(y_true: pd.Series, y_pred: np.ndarray, model_name: str
     return path
 
 
-def plot_learning_curve(
-    pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, model_name: str, cv_folds: int = 3
-) -> Path:
+def plot_learning_curve(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, model_name: str, cv_folds: int = 3) -> Path:
     """
     Training-set-size vs. error for both train and validation splits.
     - Train and validation error both high & converged -> high bias (underfitting).
@@ -95,7 +93,9 @@ def plot_learning_curve(
       variance (overfitting) -> more data or regularization would help.
     """
     train_sizes, train_scores, val_scores = learning_curve(
-        pipeline, X, np.log1p(y),
+        pipeline,
+        X,
+        np.log1p(y),
         cv=KFold(n_splits=cv_folds, shuffle=True, random_state=42),
         scoring="neg_root_mean_squared_error",
         train_sizes=np.linspace(0.1, 1.0, 6),
@@ -135,7 +135,9 @@ def plot_validation_curve(
     error) at very low alpha.
     """
     train_scores, val_scores = validation_curve(
-        pipeline, X, np.log1p(y),
+        pipeline,
+        X,
+        np.log1p(y),
         param_name=param_name,
         param_range=param_range,
         cv=KFold(n_splits=cv_folds, shuffle=True, random_state=42),
@@ -203,7 +205,9 @@ def generate_full_evaluation_report(
     if best_model_name == "ridge":
         saved_paths.append(
             plot_validation_curve(
-                best_pipeline, X_train, y_train,
+                best_pipeline,
+                X_train,
+                y_train,
                 param_name="model__alpha",
                 param_range=[0.01, 0.1, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0],
                 model_name=best_model_name,
@@ -220,8 +224,13 @@ if __name__ == "__main__":
     fitted_pipelines, results = train_and_evaluate_all_models(X_train, X_test, y_train, y_test)
     best_name = results[0].name
     paths = generate_full_evaluation_report(
-        fitted_pipelines, X_train, X_test, y_train, y_test,
-        [r.to_dict() for r in results], best_name,
+        fitted_pipelines,
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        [r.to_dict() for r in results],
+        best_name,
     )
     print("Generated figures:")
     for p in paths:

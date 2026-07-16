@@ -22,16 +22,35 @@ logger = get_logger(__name__)
 # Columns where a missing value has a real-world meaning of "does not have
 # this feature" rather than "unknown" (per the Ames Housing data dictionary).
 NONE_MEANS_ABSENT_COLUMNS = [
-    "BsmtQual", "BsmtCond", "BsmtExposure", "BsmtFinType1", "BsmtFinType2",
-    "GarageType", "GarageFinish", "GarageQual", "GarageCond",
-    "FireplaceQu", "PoolQC", "Fence", "MiscFeature", "Alley", "MasVnrType",
+    "BsmtQual",
+    "BsmtCond",
+    "BsmtExposure",
+    "BsmtFinType1",
+    "BsmtFinType2",
+    "GarageType",
+    "GarageFinish",
+    "GarageQual",
+    "GarageCond",
+    "FireplaceQu",
+    "PoolQC",
+    "Fence",
+    "MiscFeature",
+    "Alley",
+    "MasVnrType",
 ]
 
 # Numeric columns where missing plausibly means zero (e.g. no garage -> 0 cars).
 ZERO_MEANS_ABSENT_COLUMNS = [
-    "GarageYrBlt", "GarageArea", "GarageCars", "MasVnrArea",
-    "BsmtFinSF1", "BsmtFinSF2", "BsmtUnfSF", "TotalBsmtSF",
-    "BsmtFullBath", "BsmtHalfBath",
+    "GarageYrBlt",
+    "GarageArea",
+    "GarageCars",
+    "MasVnrArea",
+    "BsmtFinSF1",
+    "BsmtFinSF2",
+    "BsmtUnfSF",
+    "TotalBsmtSF",
+    "BsmtFullBath",
+    "BsmtHalfBath",
 ]
 
 
@@ -98,7 +117,9 @@ class DataCleaner:
         self._is_fitted = True
         logger.info(
             "DataCleaner fitted on %d rows: learned %d numeric medians, %d categorical modes.",
-            len(working), len(self._numeric_medians), len(self._categorical_modes),
+            len(working),
+            len(self._numeric_medians),
+            len(self._categorical_modes),
         )
         return self
 

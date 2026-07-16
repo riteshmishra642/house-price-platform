@@ -73,17 +73,18 @@ def log_all_results(results: List[Dict], fitted_pipelines: Dict) -> None:
         model_params = {}
         if pipeline is not None:
             try:
-                model_params = {
-                    f"model__{k}": v for k, v in pipeline.named_steps["model"].get_params().items()
-                }
+                model_params = {f"model__{k}": v for k, v in pipeline.named_steps["model"].get_params().items()}
             except Exception:  # noqa: BLE001
                 model_params = {}
         log_training_run(
             model_name=name,
             params=model_params,
             metrics={
-                "rmse": result["rmse"], "mae": result["mae"], "r2": result["r2"],
-                "mape": result["mape"], "cv_rmse_mean": result["cv_rmse_mean"],
+                "rmse": result["rmse"],
+                "mae": result["mae"],
+                "r2": result["r2"],
+                "mape": result["mape"],
+                "cv_rmse_mean": result["cv_rmse_mean"],
             },
             model_pipeline=pipeline,
         )

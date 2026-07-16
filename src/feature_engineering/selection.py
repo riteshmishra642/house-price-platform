@@ -37,9 +37,7 @@ def correlation_ranking(df: pd.DataFrame, target: str = "SalePrice") -> pd.Serie
     return corr.sort_values(ascending=False)
 
 
-def mutual_information_ranking(
-    X: pd.DataFrame, y: pd.Series, random_seed: int = 42
-) -> pd.Series:
+def mutual_information_ranking(X: pd.DataFrame, y: pd.Series, random_seed: int = 42) -> pd.Series:
     """
     Mutual information captures nonlinear dependence that Pearson correlation
     misses (e.g. Neighborhood's effect on price is categorical/nonlinear).
@@ -51,9 +49,7 @@ def mutual_information_ranking(
     return pd.Series(mi_scores, index=numeric_X.columns).sort_values(ascending=False)
 
 
-def tree_based_importance(
-    X: pd.DataFrame, y: pd.Series, random_seed: int = 42
-) -> pd.Series:
+def tree_based_importance(X: pd.DataFrame, y: pd.Series, random_seed: int = 42) -> pd.Series:
     """
     Random Forest impurity-based importance: fast and captures nonlinear
     interactions, but biased toward high-cardinality / high-variance

@@ -14,9 +14,15 @@ def test_house_age_is_non_negative(engineered_dataset):
 def test_total_bathrooms_computed_correctly():
     df = pd.DataFrame(
         {
-            "FullBath": [2], "HalfBath": [1], "BsmtFullBath": [1], "BsmtHalfBath": [0],
-            "TotRmsAbvGrd": [8], "BedroomAbvGr": [3],
-            "YrSold": [2008], "YearBuilt": [2000], "YearRemodAdd": [2000],
+            "FullBath": [2],
+            "HalfBath": [1],
+            "BsmtFullBath": [1],
+            "BsmtHalfBath": [0],
+            "TotRmsAbvGrd": [8],
+            "BedroomAbvGr": [3],
+            "YrSold": [2008],
+            "YearBuilt": [2000],
+            "YearRemodAdd": [2000],
         }
     )
     result = FeatureEngineer().transform(df)

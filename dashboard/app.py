@@ -77,9 +77,26 @@ def load_metrics():
 
 
 NEIGHBORHOODS = [
-    "NAmes", "CollgCr", "OldTown", "Edwards", "Somerst", "Gilbert", "NridgHt",
-    "Sawyer", "NWAmes", "SawyerW", "BrkSide", "Crawfor", "Mitchel", "NoRidge",
-    "Timber", "IDOTRR", "ClearCr", "StoneBr", "SWISU", "Blmngtn",
+    "NAmes",
+    "CollgCr",
+    "OldTown",
+    "Edwards",
+    "Somerst",
+    "Gilbert",
+    "NridgHt",
+    "Sawyer",
+    "NWAmes",
+    "SawyerW",
+    "BrkSide",
+    "Crawfor",
+    "Mitchel",
+    "NoRidge",
+    "Timber",
+    "IDOTRR",
+    "ClearCr",
+    "StoneBr",
+    "SWISU",
+    "Blmngtn",
 ]
 QUALITY_OPTIONS = ["Po", "Fa", "TA", "Gd", "Ex"]
 HOUSE_STYLES = ["1Story", "2Story", "1.5Fin", "SLvl", "SFoyer"]
@@ -137,21 +154,54 @@ def sidebar_property_form() -> dict:
         yr_sold = st.slider("Year Sold", 2000, 2026, 2008)
 
     return {
-        "MSSubClass": "60", "MSZoning": ms_zoning, "LotFrontage": lot_frontage, "LotArea": lot_area,
-        "Street": "Pave", "LotShape": "Reg", "LandContour": "Lvl", "Utilities": "AllPub",
-        "Neighborhood": neighborhood, "BldgType": bldg_type, "HouseStyle": house_style,
-        "OverallQual": overall_qual, "OverallCond": overall_cond, "YearBuilt": year_built,
-        "YearRemodAdd": year_remod, "RoofStyle": "Gable", "Exterior1st": "VinylSd", "MasVnrArea": 0.0,
-        "ExterQual": exter_qual, "Foundation": "PConc", "BsmtQual": bsmt_qual, "BsmtCond": "TA",
-        "TotalBsmtSF": total_bsmt_sf, "HeatingQC": heating_qc, "CentralAir": "Y",
-        "1stFlrSF": first_flr_sf, "2ndFlrSF": second_flr_sf, "GrLivArea": gr_liv_area,
-        "BsmtFullBath": bsmt_full_bath, "FullBath": full_bath, "HalfBath": half_bath,
-        "BedroomAbvGr": bedrooms, "KitchenQual": kitchen_qual, "TotRmsAbvGrd": tot_rooms,
-        "Fireplaces": fireplaces, "GarageType": "Attchd" if garage_cars > 0 else "None",
-        "GarageYrBlt": float(year_built) if garage_cars > 0 else None, "GarageCars": garage_cars,
-        "GarageArea": garage_area, "GarageQual": "TA" if garage_cars > 0 else "None",
-        "WoodDeckSF": wood_deck_sf, "OpenPorchSF": open_porch_sf, "PoolArea": pool_area,
-        "Fence": "None", "MoSold": mo_sold, "YrSold": yr_sold, "SaleType": "WD", "SaleCondition": "Normal",
+        "MSSubClass": "60",
+        "MSZoning": ms_zoning,
+        "LotFrontage": lot_frontage,
+        "LotArea": lot_area,
+        "Street": "Pave",
+        "LotShape": "Reg",
+        "LandContour": "Lvl",
+        "Utilities": "AllPub",
+        "Neighborhood": neighborhood,
+        "BldgType": bldg_type,
+        "HouseStyle": house_style,
+        "OverallQual": overall_qual,
+        "OverallCond": overall_cond,
+        "YearBuilt": year_built,
+        "YearRemodAdd": year_remod,
+        "RoofStyle": "Gable",
+        "Exterior1st": "VinylSd",
+        "MasVnrArea": 0.0,
+        "ExterQual": exter_qual,
+        "Foundation": "PConc",
+        "BsmtQual": bsmt_qual,
+        "BsmtCond": "TA",
+        "TotalBsmtSF": total_bsmt_sf,
+        "HeatingQC": heating_qc,
+        "CentralAir": "Y",
+        "1stFlrSF": first_flr_sf,
+        "2ndFlrSF": second_flr_sf,
+        "GrLivArea": gr_liv_area,
+        "BsmtFullBath": bsmt_full_bath,
+        "FullBath": full_bath,
+        "HalfBath": half_bath,
+        "BedroomAbvGr": bedrooms,
+        "KitchenQual": kitchen_qual,
+        "TotRmsAbvGrd": tot_rooms,
+        "Fireplaces": fireplaces,
+        "GarageType": "Attchd" if garage_cars > 0 else "None",
+        "GarageYrBlt": float(year_built) if garage_cars > 0 else None,
+        "GarageCars": garage_cars,
+        "GarageArea": garage_area,
+        "GarageQual": "TA" if garage_cars > 0 else "None",
+        "WoodDeckSF": wood_deck_sf,
+        "OpenPorchSF": open_porch_sf,
+        "PoolArea": pool_area,
+        "Fence": "None",
+        "MoSold": mo_sold,
+        "YrSold": yr_sold,
+        "SaleType": "WD",
+        "SaleCondition": "Normal",
     }
 
 
@@ -175,10 +225,7 @@ def render_prediction_tab(property_input: dict) -> None:
     try:
         predictor = load_predictor()
     except Exception as exc:  # noqa: BLE001
-        st.error(
-            "No trained model found. Train one first by running:\n\n"
-            "`python -m src.training.trainer`"
-        )
+        st.error("No trained model found. Train one first by running:\n\n" "`python -m src.training.trainer`")
         st.exception(exc)
         return
 
@@ -251,8 +298,12 @@ def render_model_comparison_tab() -> None:
     st.dataframe(
         metrics_df[["name", "rmse", "mae", "r2", "mape", "cv_rmse_mean"]].rename(
             columns={
-                "name": "Model", "rmse": "RMSE ($)", "mae": "MAE ($)",
-                "r2": "R²", "mape": "MAPE (%)", "cv_rmse_mean": "CV RMSE",
+                "name": "Model",
+                "rmse": "RMSE ($)",
+                "mae": "MAE ($)",
+                "r2": "R²",
+                "mape": "MAPE (%)",
+                "cv_rmse_mean": "CV RMSE",
             }
         ),
         use_container_width=True,

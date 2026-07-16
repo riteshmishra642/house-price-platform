@@ -69,12 +69,8 @@ def get_base_models(random_seed: int = 42) -> Dict[str, object]:
         "lasso": Lasso(alpha=0.001, random_state=random_seed, max_iter=10000),
         "elasticnet": ElasticNet(alpha=0.001, l1_ratio=0.5, random_state=random_seed, max_iter=10000),
         "decision_tree": DecisionTreeRegressor(max_depth=8, random_state=random_seed),
-        "random_forest": RandomForestRegressor(
-            n_estimators=200, max_depth=12, n_jobs=-1, random_state=random_seed
-        ),
-        "extra_trees": ExtraTreesRegressor(
-            n_estimators=200, max_depth=12, n_jobs=-1, random_state=random_seed
-        ),
+        "random_forest": RandomForestRegressor(n_estimators=200, max_depth=12, n_jobs=-1, random_state=random_seed),
+        "extra_trees": ExtraTreesRegressor(n_estimators=200, max_depth=12, n_jobs=-1, random_state=random_seed),
         "gradient_boosting": GradientBoostingRegressor(
             n_estimators=200, max_depth=3, learning_rate=0.05, random_state=random_seed
         ),

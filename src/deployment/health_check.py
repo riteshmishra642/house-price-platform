@@ -47,7 +47,9 @@ def wait_for_api_ready(
 
     logger.error(
         "API at %s did not become ready within %ds (last error: %s)",
-        base_url, timeout_seconds, last_error,
+        base_url,
+        timeout_seconds,
+        last_error,
     )
     return False
 
@@ -85,7 +87,8 @@ def verify_model_registry_matches_deployed(base_url: str = "http://localhost:800
     else:
         logger.warning(
             "Deployed model ('%s') does NOT match local registry ('%s').",
-            deployed_info.get("model_name"), registry.get("best_model"),
+            deployed_info.get("model_name"),
+            registry.get("best_model"),
         )
     return matches
 

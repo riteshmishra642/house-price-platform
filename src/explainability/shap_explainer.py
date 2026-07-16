@@ -46,8 +46,7 @@ except ImportError:  # pragma: no cover
 def _require_shap() -> None:
     if not _HAS_SHAP:
         raise ImportError(
-            "shap is not installed. Install it with `pip install shap` to use "
-            "the explainability module."
+            "shap is not installed. Install it with `pip install shap` to use " "the explainability module."
         )
 
 
@@ -195,12 +194,9 @@ def explain_single_prediction(pipeline: Pipeline, X_background: pd.DataFrame, X_
     shap_values = explainer(X_instance_transformed)
 
     contributions = {
-        str(feature): float(value)
-        for feature, value in zip(shap_values.feature_names, shap_values.values[0])
+        str(feature): float(value) for feature, value in zip(shap_values.feature_names, shap_values.values[0])
     }
-    sorted_contributions = dict(
-        sorted(contributions.items(), key=lambda item: abs(item[1]), reverse=True)
-    )
+    sorted_contributions = dict(sorted(contributions.items(), key=lambda item: abs(item[1]), reverse=True))
     return {
         "base_value": float(np.ravel(shap_values.base_values[0])[0]),
         "feature_contributions": sorted_contributions,

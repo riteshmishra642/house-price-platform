@@ -43,14 +43,36 @@ sns.set_theme(style="whitegrid")
 plt.rcParams.update({"figure.autolayout": True, "font.size": 9})
 
 KEY_NUMERIC_COLS = [
-    "SalePrice", "GrLivArea", "TotalBsmtSF", "1stFlrSF", "2ndFlrSF",
-    "LotArea", "LotFrontage", "GarageArea", "OverallQual", "OverallCond",
-    "YearBuilt", "YearRemodAdd", "TotalBathrooms", "TotRmsAbvGrd",
-    "Fireplaces", "GarageCars", "WoodDeckSF", "OpenPorchSF",
+    "SalePrice",
+    "GrLivArea",
+    "TotalBsmtSF",
+    "1stFlrSF",
+    "2ndFlrSF",
+    "LotArea",
+    "LotFrontage",
+    "GarageArea",
+    "OverallQual",
+    "OverallCond",
+    "YearBuilt",
+    "YearRemodAdd",
+    "TotalBathrooms",
+    "TotRmsAbvGrd",
+    "Fireplaces",
+    "GarageCars",
+    "WoodDeckSF",
+    "OpenPorchSF",
 ]
 KEY_CATEGORICAL_COLS = [
-    "Neighborhood", "HouseStyle", "BldgType", "MSZoning", "SaleCondition",
-    "Foundation", "ExterQual", "KitchenQual", "CentralAir", "GarageType",
+    "Neighborhood",
+    "HouseStyle",
+    "BldgType",
+    "MSZoning",
+    "SaleCondition",
+    "Foundation",
+    "ExterQual",
+    "KitchenQual",
+    "CentralAir",
+    "GarageType",
 ]
 
 
@@ -264,7 +286,10 @@ def plot_interactive_neighborhood_dashboard(df: pd.DataFrame, target: str = "Sal
         logger.warning("Skipping interactive neighborhood dashboard - plotly not installed.")
         return None
     fig = px.box(
-        df, x="Neighborhood", y=target, color="Neighborhood",
+        df,
+        x="Neighborhood",
+        y=target,
+        color="Neighborhood",
         title=f"Interactive: {target} Distribution by Neighborhood",
         points=False,
     )
@@ -282,7 +307,10 @@ def plot_interactive_scatter_matrix(df: pd.DataFrame, target: str = "SalePrice")
         return None
     sample = df.sample(min(800, len(df)), random_state=42)
     fig = px.scatter(
-        sample, x="GrLivArea", y=target, color="OverallQual",
+        sample,
+        x="GrLivArea",
+        y=target,
+        color="OverallQual",
         size="TotalBsmtSF" if "TotalBsmtSF" in sample.columns else None,
         hover_data=["Neighborhood", "YearBuilt"],
         title="Interactive: Living Area vs Sale Price (colored by Overall Quality)",
