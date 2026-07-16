@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort flake8
+
+      - name: Check formatting (black)
+        run: black --check --line-length 120 src api dashboard tests
+
+      - name: Check import order (isort)
+        run: isort --check-only --profile black --line-length 120 src api dashboard tests
+
+      - name: Lint (flake8)
+        run: flake8 src api dashboard tests --max-line-length=120 --extend-ignore=E203,W503
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Train a model (required for API/prediction tests)
+        run: python -m src.training.trainer
+
+      - name: Run tests with coverage
+        run: pytest --cov=src --cov=api --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  docker-build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: api
+          push: false
+          tags: house-price-platform-api:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Dashboard image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: dashboard
+          push: false
+          tags: house-price-platform-dashboard:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

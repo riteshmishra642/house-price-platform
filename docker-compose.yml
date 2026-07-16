@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    container_name: house-price-trainer
+    command: ["python", "-m", "src.training.trainer"]
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    profiles: ["train"]  # run explicitly with: docker compose --profile train run trainer
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: house-price-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    environment:
+      - HOUSE_PRICE_CONFIG=/app/config/config.yaml
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dashboard
+    container_name: house-price-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    environment:
+      - HOUSE_PRICE_CONFIG=/app/config/config.yaml
+    depends_on:
+      - api
+    restart: unless-stopped

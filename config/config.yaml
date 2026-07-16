@@ -1,0 +1,110 @@
+project:
+  name: "house-price-platform"
+  version: "1.0.0"
+  random_seed: 42
+
+data:
+  raw_dir: "data/raw"
+  interim_dir: "data/interim"
+  processed_dir: "data/processed"
+  external_dir: "data/external"
+  raw_filename: "ames_housing_raw.csv"
+  interim_filename: "ames_housing_interim.csv"
+  processed_filename: "ames_housing_processed.csv"
+  train_filename: "train.csv"
+  test_filename: "test.csv"
+  target_column: "SalePrice"
+  test_size: 0.2
+  openml_dataset_name: "house_prices"
+  openml_data_id: 42165
+  ames_source_url: "https://raw.githubusercontent.com/jbrownlee/Datasets/master/AmesHousing.csv"
+
+  fallback:
+    enabled: true
+    n_samples: 2930
+    description: >
+      Statistically realistic synthetic dataset matching the Ames Housing
+      schema and distributions. Used automatically when neither OpenML nor
+      the raw source URL is reachable (e.g. offline environments), so the
+      full pipeline remains reproducible end-to-end.
+
+preprocessing:
+  missing_value_strategy:
+    numeric: "median"
+    categorical: "mode"
+  outlier_method: "iqr"
+  outlier_iqr_multiplier: 3.0
+  scaling_method: "standard"
+  categorical_encoding: "onehot"
+  rare_category_threshold: 0.01
+
+feature_engineering:
+  create_age_features: true
+  create_ratio_features: true
+  create_quality_index: true
+  create_luxury_score: true
+  log_transform_target: true
+
+feature_selection:
+  method: "tree_importance"
+  top_k_features: 40
+  variance_threshold: 0.0
+  correlation_threshold: 0.9
+
+models:
+  candidates:
+    - "linear_regression"
+    - "ridge"
+    - "lasso"
+    - "elasticnet"
+    - "decision_tree"
+    - "random_forest"
+    - "extra_trees"
+    - "gradient_boosting"
+    - "xgboost"
+    - "lightgbm"
+    - "catboost"
+    - "svr"
+    - "knn"
+    - "stacking"
+    - "voting"
+  cv_folds: 5
+  scoring: "neg_root_mean_squared_error"
+  n_jobs: -1
+
+  hyperparameter_tuning:
+    method: "randomized_search"
+    n_iter: 30
+    optuna_trials: 50
+
+paths:
+  model_dir: "models"
+  reports_dir: "reports"
+  logs_dir: "reports/logs"
+  figures_dir: "reports/figures"
+  metrics_file: "reports/metrics.json"
+  model_registry_file: "models/model_registry.json"
+  best_model_file: "models/best_model.joblib"
+  preprocessing_pipeline_file: "models/preprocessing_pipeline.joblib"
+  feature_names_file: "models/feature_names.json"
+
+mlflow:
+  tracking_uri: "reports/mlruns"
+  experiment_name: "house-price-prediction"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  title: "House Price Prediction API"
+  description: "Production-grade API serving explainable house price predictions"
+  version: "1.0.0"
+
+dashboard:
+  title: "House Price Intelligence Platform"
+  page_icon: "🏠"
+  layout: "wide"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
